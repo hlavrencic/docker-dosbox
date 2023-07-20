@@ -1,6 +1,10 @@
 #!/bin/bash
 set -ex
 
+VNC_PASSWD=${VNC_PASSWD:-dosbox}
+
+x11vnc -storepasswd $VNC_PASSWD /app/vnc_pass
+
 RUN_FLUXBOX=${RUN_FLUXBOX:-yes}
 RUN_XTERM=${RUN_XTERM:-yes}
 
