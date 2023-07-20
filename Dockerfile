@@ -23,8 +23,23 @@ ENV HOME=/root \
     DISPLAY=:0.0 \
     DISPLAY_WIDTH=1024 \
     DISPLAY_HEIGHT=768 \
-    RUN_XTERM=yes \
+    RUN_XTERM=no \
     RUN_FLUXBOX=yes
 COPY . /app
 CMD ["/app/entrypoint.sh"]
 EXPOSE 8080
+
+# Install dosbox
+RUN apt install -y dosbox && \
+    rm -rfv /var/lib/apt/lists/*
+
+COPY dosbox.conf /app/conf.d/
+
+### get games from https://dosgames.com/
+
+### Add games to image...
+# COPY game1.tar.gz /root/dos/game1
+# COPY game2 /root/dos/game2
+
+### ... or use from volume
+# VOLUME /root/dos/
