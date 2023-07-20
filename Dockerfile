@@ -24,7 +24,8 @@ ENV HOME=/root \
     DISPLAY_WIDTH=1024 \
     DISPLAY_HEIGHT=768 \
     RUN_XTERM=no \
-    RUN_FLUXBOX=yes
+    RUN_FLUXBOX=no \
+    VNC_PASSWD=dosbox
 COPY . /app
 CMD ["/app/entrypoint.sh"]
 EXPOSE 8080
