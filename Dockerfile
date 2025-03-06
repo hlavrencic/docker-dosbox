@@ -6,6 +6,11 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONMALLOC=malloc \
     LANG=en_US.UTF-8
 
+# Update the keyring so that repository signatures are valid
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends debian-archive-keyring && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
       bash \
       fluxbox \
