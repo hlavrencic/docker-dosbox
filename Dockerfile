@@ -1,9 +1,12 @@
 FROM debian:bullseye
 
-# Install supervisor, VNC, & X11 packages
-RUN set -ex; \
-    apt-get update; \
-    apt-get install -y \
+# Set environment variables to mitigate QEMU issues with Python
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONMALLOC=malloc \
+    LANG=en_US.UTF-8
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
       bash \
       fluxbox \
       net-tools \
@@ -12,8 +15,9 @@ RUN set -ex; \
       x11vnc \
       xterm \
       xvfb \
-      dosbox; \
-    rm -rfv /var/lib/apt/lists/*
+      dosbox \
+      dos2unix && \
+    rm -rf /var/lib/apt/lists/*
 
 # Setup demo environment variables
 ENV HOME=/root \
@@ -22,11 +26,26 @@ ENV HOME=/root \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=C.UTF-8 \
     DISPLAY=:0.0 \
-    DISPLAY_WIDTH=1024 \
-    DISPLAY_HEIGHT=768 \
+    DISPLAY_WIDTH=640 \
+    DISPLAY_HEIGHT=480 \
     RUN_XTERM=no \
     RUN_FLUXBOX=no \
     VNC_PASSWD=dosbox
-COPY . /app
+
+COPY conf.d/ /app/conf.d/
+COPY dosbox/ /app/dosbox/
+COPY entrypoint.sh /app/entrypoint.sh
+COPY supervisord.conf /app/supervisord.conf
+
+RUN dos2unix /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+#RUN sed -i '1s/^\xef\xbb\xbf//' /app/entrypoint.sh
+
+VOLUME ["/dos"]
+VOLUME ["/mount"]
+
 CMD ["/app/entrypoint.sh"]
 EXPOSE 8080
+
+#docker build -t hn8888/dosbox .
+#docker run -v ./dos:/dos -v ./mount:/mount -p 8080:8080 hn8888/dosbox
