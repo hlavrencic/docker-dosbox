@@ -6,6 +6,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONMALLOC=malloc \
     LANG=en_US.UTF-8
 
+RUN sed -i 's|http://deb.debian.org/debian|https://deb.debian.org/debian|g' /etc/apt/sources.list && \
+    sed -i 's|http://deb.debian.org/debian-security|https://deb.debian.org/debian-security|g' /etc/apt/sources.list && \
+    sed -i 's|http://deb.debian.org/debian bullseye-updates|https://deb.debian.org/debian bullseye-updates|g' /etc/apt/sources.list
+
 # Update the keyring so that repository signatures are valid
 RUN apt-get update && \
     apt-get install -y --no-install-recommends debian-archive-keyring && \
